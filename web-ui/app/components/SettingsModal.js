@@ -6,11 +6,9 @@ import { FiX, FiSave, FiEye, FiEyeOff, FiCheck, FiAlertCircle } from 'react-icon
 
 export default function SettingsModal({ isOpen, onClose }) {
 	const [inworldApiKey, setInworldApiKey] = useState('')
-	const [elevenLabApiKey, setElevenLabApiKey] = useState('')
-	const [openaiApiKey, setOpenaiApiKey] = useState('')
+	const [groqApiKey, setGroqApiKey] = useState('')
 	const [showInworld, setShowInworld] = useState(false)
-	const [showEleven, setShowEleven] = useState(false)
-	const [showOpenai, setShowOpenai] = useState(false)
+	const [showGroq, setShowGroq] = useState(false)
 	const [loading, setLoading] = useState(false)
 	const [saving, setSaving] = useState(false)
 	const [error, setError] = useState('')
@@ -29,8 +27,7 @@ export default function SettingsModal({ isOpen, onClose }) {
 			if (response.ok) {
 				const data = await response.json()
 				setInworldApiKey(data.INWORLD_API_KEY || '')
-				setElevenLabApiKey(data.ELEVEN_LAB_API || '')
-				setOpenaiApiKey(data.OPENAI_API_KEY || '')
+				setGroqApiKey(data.GROQ_API_KEY || '')
 			}
 		} catch (err) {
 			setError('Failed to load settings')
@@ -51,8 +48,7 @@ export default function SettingsModal({ isOpen, onClose }) {
 				},
 				body: JSON.stringify({
 					INWORLD_API_KEY: inworldApiKey,
-					ELEVEN_LAB_API: elevenLabApiKey,
-					OPENAI_API_KEY: openaiApiKey,
+					GROQ_API_KEY: groqApiKey,
 				}),
 			})
 
@@ -150,26 +146,26 @@ export default function SettingsModal({ isOpen, onClose }) {
 									</p>
 								</div>
 
-								{/* ElevenLabs API Key */}
+								{/* Groq API Key */}
 								<div>
 									<label className="block text-sm font-medium mb-2">
-										ElevenLabs API Key{' '}
-										<span className="text-gray-400">(Optional)</span>
+										Groq API Key{' '}
+										<span className="text-blue-400">(Script Generation - Kimi K2)</span>
 									</label>
 									<div className="relative">
 										<input
-											type={showEleven ? 'text' : 'password'}
-											value={elevenLabApiKey}
-											onChange={e => setElevenLabApiKey(e.target.value)}
-											placeholder="Enter your ElevenLabs API key"
+											type={showGroq ? 'text' : 'password'}
+											value={groqApiKey}
+											onChange={e => setGroqApiKey(e.target.value)}
+											placeholder="Enter your Groq API key"
 											className="w-full px-4 py-3 pr-12 bg-gray-900 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
 										/>
 										<button
 											type="button"
-											onClick={() => setShowEleven(!showEleven)}
+											onClick={() => setShowGroq(!showGroq)}
 											className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-800 rounded transition-colors"
 										>
-											{showEleven ? (
+											{showGroq ? (
 												<FiEyeOff className="text-gray-400" />
 											) : (
 												<FiEye className="text-gray-400" />
@@ -177,36 +173,24 @@ export default function SettingsModal({ isOpen, onClose }) {
 										</button>
 									</div>
 									<p className="text-xs text-gray-400 mt-2">
-										Alternative TTS provider. Not required if using Inworld.
+										Get your API key from{' '}
+										<a
+											href="https://console.groq.com"
+											target="_blank"
+											rel="noopener noreferrer"
+											className="text-blue-400 hover:underline"
+										>
+											console.groq.com
+										</a>{' '}
+										- Uses Kimi K2 Instruct for fast script generation
 									</p>
 								</div>
 
-								{/* OpenAI API Key */}
-								<div>
-									<label className="block text-sm font-medium mb-2">
-										OpenAI API Key{' '}
-										<span className="text-gray-400">(For script generation)</span>
-									</label>
-									<div className="relative">
-										<input
-											type={showOpenai ? 'text' : 'password'}
-											value={openaiApiKey}
-											onChange={e => setOpenaiApiKey(e.target.value)}
-											placeholder="Enter your OpenAI API key"
-											className="w-full px-4 py-3 pr-12 bg-gray-900 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-										/>
-										<button
-											type="button"
-											onClick={() => setShowOpenai(!showOpenai)}
-											className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-800 rounded transition-colors"
-										>
-											{showOpenai ? (
-												<FiEyeOff className="text-gray-400" />
-											) : (
-												<FiEye className="text-gray-400" />
-											)}
-										</button>
-									</div>
+								{/* Placeholder for future API keys */}
+								<div className="pt-4 border-t border-gray-700">
+									<p className="text-sm text-gray-400">
+										💡 <strong>Note:</strong> ElevenLabs and OpenAI have been replaced with Groq's Kimi K2 model for faster, more efficient script generation.
+									</p>
 								</div>
 
 								{/* Error/Success Messages */}

@@ -10,8 +10,7 @@ export async function GET() {
 		if (!existsSync(ENV_PATH)) {
 			return NextResponse.json({
 				INWORLD_API_KEY: '',
-				ELEVEN_LAB_API: '',
-				OPENAI_API_KEY: '',
+				GROQ_API_KEY: '',
 			})
 		}
 
@@ -27,8 +26,7 @@ export async function GET() {
 
 		return NextResponse.json({
 			INWORLD_API_KEY: envVars.INWORLD_API_KEY || '',
-			ELEVEN_LAB_API: envVars.ELEVEN_LAB_API || '',
-			OPENAI_API_KEY: envVars.OPENAI_API_KEY || '',
+			GROQ_API_KEY: envVars.GROQ_API_KEY || '',
 		})
 	} catch (error) {
 		console.error('Error reading settings:', error)
@@ -44,11 +42,10 @@ export async function POST(request) {
 # Get your API key from: https://studio.inworld.ai
 INWORLD_API_KEY=${data.INWORLD_API_KEY || ''}
 
-# Optional: ElevenLabs API (if you want to use ElevenLabs instead)
-ELEVEN_LAB_API=${data.ELEVEN_LAB_API || ''}
-
-# OpenAI API Key (for script generation)
-OPENAI_API_KEY=${data.OPENAI_API_KEY || ''}
+# Groq API Key for Script Generation (Required)
+# Get your API key from: https://console.groq.com
+# Uses Kimi K2 Instruct model (moonshotai/kimi-k2-instruct-0905)
+GROQ_API_KEY=${data.GROQ_API_KEY || ''}
 `
 
 		await writeFile(ENV_PATH, envContent)

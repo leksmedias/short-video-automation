@@ -26,6 +26,7 @@
 		"fluent-ffmpeg": "^2.1.2",
 		"fs-extra": "^11.1.1",
 		"googleapis": "^126.0.1",
+		"groq-sdk": "^0.8.0",
 		"langchain": "0.1.17",
 		"nodejs-whisper": "^0.1.6",
 		"openai": "^3.3.0",

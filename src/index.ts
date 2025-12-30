@@ -5,6 +5,12 @@ import os from 'os'
 
 import { createShortScript, summarizeShortScript } from './videoScript'
 import { convertToWav, createAudio } from './audio/elevenAudio'
+import {
+	createAudioWithInworld,
+	generateVTTFromWordAlignment,
+	generateWordByWordVTT,
+	WordAlignment,
+} from './audio/inworldAudio'
 import { whisper } from './transcript/transcribe'
 import fs from 'fs'
 import express from 'express'
@@ -157,35 +163,67 @@ const generateQuoraShort = async ({
 
 		if (!finalScript) throw new Error('Script not generated')
 
-		// Creating voice for answer
-		await createAudio({ script: finalScript, language, outputFilePath: answerAudioFilePath })
-
-		//  Creating voice for question
-		await createAudio({
+		// Creating voice for question using Inworld TTS
+		console.log('Generating question audio with Inworld TTS...')
+		const questionAlignment = await createAudioWithInworld({
 			script: question,
-			language,
+			voiceId: 'Freya', // Female voice for question
+			modelId: 'inworld-tts-1',
 			outputFilePath: questionAudioFilePath,
-			voice: 'IKne3meq5aSn9XLyUdCD',
 		})
 
-		// console.log('AUDIO GENERATED SUCCESSFULLY', 'basicaudio.mp3')
+		// Creating voice for answer using Inworld TTS
+		console.log('Generating answer audio with Inworld TTS...')
+		const answerAlignment = await createAudioWithInworld({
+			script: finalScript,
+			voiceId: 'Dennis', // Male voice for answer
+			modelId: 'inworld-tts-1',
+			outputFilePath: answerAudioFilePath,
+		})
 
+		// Merge the two audio files
 		await mergeTwoAudios({
-			questionAudio: questionAudioFilePath.replace('mp3', 'wav'),
-			answerAudio: answerAudioFilePath.replace('mp3', 'wav'),
+			questionAudio: questionAudioFilePath,
+			answerAudio: answerAudioFilePath,
 			finalOutput: quoraAudioFilePath,
 		})
 
-		const currentDir = process.cwd()
+		// Combine word alignments from both question and answer
+		let combinedAlignment: WordAlignment | null = null
 
-		await whisper(quoraAudioFilePath.replace('mp3', 'wav'))
+		if (questionAlignment && answerAlignment) {
+			// Get duration of question audio to offset answer timestamps
+			const ffmpeg = require('fluent-ffmpeg')
+			const questionDuration: number = await new Promise((resolve, reject) => {
+				ffmpeg.ffprobe(questionAudioFilePath, (err: any, metadata: any) => {
+					if (err) reject(err)
+					else resolve(metadata.format.duration)
+				})
+			})
 
-		process.chdir(currentDir)
-		// // return
+			// Combine alignments with proper time offset for answer
+			combinedAlignment = {
+				words: [...questionAlignment.words, ...answerAlignment.words],
+				wordStartTimeSeconds: [
+					...questionAlignment.wordStartTimeSeconds,
+					...answerAlignment.wordStartTimeSeconds.map(t => t + questionDuration),
+				],
+				wordEndTimeSeconds: [
+					...questionAlignment.wordEndTimeSeconds,
+					...answerAlignment.wordEndTimeSeconds.map(t => t + questionDuration),
+				],
+			}
 
-		// console.log('MERGING AUDIO AND VIDEO')
-
-		await processVTTFile(subTitlesFilePath)
+			// Generate word-by-word VTT subtitles from combined alignment
+			console.log('Generating word-by-word subtitles from Inworld timestamps...')
+			await generateWordByWordVTT(combinedAlignment, subTitlesFilePath)
+		} else {
+			console.warn('No word alignment data available, falling back to Whisper')
+			const currentDir = process.cwd()
+			await whisper(quoraAudioFilePath.replace('mp3', 'wav'))
+			process.chdir(currentDir)
+			await processVTTFile(subTitlesFilePath)
+		}
 
 		await mergeAudio({
 			videoFilePath,

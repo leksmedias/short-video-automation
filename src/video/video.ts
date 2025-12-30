@@ -37,24 +37,23 @@ export const mergeAudio = async ({
 
 	const audioDurationInSeconds = audiodata.format.duration
 
-	// Calculate how many times the audio needs to be repeated to match the video duration
-	const trimDuration = Math.min(videoDurationInSeconds!, audioDurationInSeconds!)
-	const audioSpeed = 1
-
-	const adjustedTrimDuration = trimDuration / audioSpeed
-
 	const backgroundMusicFilePath = path.join(__dirname, '..', '..', 'bg.mp3')
-	
 
+	// Calculate how many times the video needs to be looped to match audio duration
+	const loopCount = Math.ceil(audioDurationInSeconds! / videoDurationInSeconds!)
+
+	console.log(`Video duration: ${videoDurationInSeconds}s, Audio duration: ${audioDurationInSeconds}s`)
+	console.log(`Looping video ${loopCount} times to match audio length`)
+
+	// Create video filter that loops the video and applies TikTok formatting with subtitles
 	const tiktokFilterWithSubtitles =
-		`scale=-1:1920:force_original_aspect_ratio=decrease,crop=1080:1920,subtitles=${subtitlePath}:force_style='Alignment=10,FontName=Trebuchet,FontSize=18,PrimaryColour=&Hffffff&,OutlineColour=&H00000000&,MarginV=25'`
+		`loop=loop=${loopCount - 1}:size=1:start=0,scale=-1:1920:force_original_aspect_ratio=decrease,crop=1080:1920,subtitles=${subtitlePath}:force_style='Alignment=10,FontName=Trebuchet,FontSize=18,PrimaryColour=&Hffffff&,OutlineColour=&H00000000&,MarginV=25'`
 
 	return new Promise((resolve, reject) => {
 		// continue with the same part before
 
 		ffmpeg()
 			.input(videoFilePath)
-			.inputOptions(`-t ${adjustedTrimDuration}`)
 			.input(audioFilePath)
 			.input(backgroundMusicFilePath)
 			.videoFilter(tiktokFilterWithSubtitles)
@@ -73,12 +72,22 @@ export const mergeAudio = async ({
 				},
 				{
 					filter: 'amix',
-					options: { inputs: 2, duration: 'shortest' },
+					options: { inputs: 2, duration: 'longest' },
 					inputs: ['volumeAdjustedAudio', 'volumeAdjustedBGM'],
 					outputs: 'amixed',
 				},
 			])
-			.outputOptions(['-map', '0:v', '-map', '[amixed]', '-c:v libx264', '-c:a aac'])
+			.outputOptions([
+				'-map',
+				'0:v',
+				'-map',
+				'[amixed]',
+				'-c:v',
+				'libx264',
+				'-c:a',
+				'aac',
+				'-shortest', // Trim video to match audio length exactly
+			])
 			.output(outputVideoPath)
 			.on('start', commandLine => {
 				console.log('Spawned Ffmpeg with command: ' + commandLine)

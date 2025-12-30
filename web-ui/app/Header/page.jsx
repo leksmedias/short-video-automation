@@ -69,7 +69,7 @@ let textvariant = {
 
 let Icons = [
   { name: <PiDiscordLogoLight />, href: "https://discord.gg/Xcj23Wsb" },
-  { name: <PiGithubLogoLight />, href: "https://github.com/generativevisions" },
+  { name: <PiGithubLogoLight />, href: "https://github.com/leksmedias/short-video-automation" },
 ];
 
 

@@ -11,7 +11,7 @@ Here are some example videos created using Short Video Automation:
 
 
 
-https://github.com/ChetanXpro/short-video-automation/assets/107798155/1220d3d7-46ac-4c6f-90ad-9f9529a1bca6
+https://github.com/leksmedias/short-video-automation/assets/example-video.mp4
 
 
 
@@ -43,7 +43,7 @@ Short Video Automation is a tool that simplifies the process of creating short v
 
 ```bash
 # Clone the repository
-git clone https://github.com/ChetanXpro/short-video-automation.git
+git clone https://github.com/leksmedias/short-video-automation.git
 cd short-video-automation
 
 # Run the installation script
@@ -65,7 +65,7 @@ The script will automatically:
 Clone the repository:
 
 ```bash
-git clone https://github.com/ChetanXpro/short-video-automation.git
+git clone https://github.com/leksmedias/short-video-automation.git
 cd short-video-automation
 ```
 

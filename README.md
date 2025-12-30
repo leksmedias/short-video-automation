@@ -39,10 +39,33 @@ Short Video Automation is a tool that simplifies the process of creating short v
 
 ### Installation
 
+**Option 1: One-Click Installation (Recommended)**
+
+```bash
+# Clone the repository
+git clone https://github.com/ChetanXpro/short-video-automation.git
+cd short-video-automation
+
+# Run the installation script
+chmod +x install.sh
+./install.sh
+```
+
+The script will automatically:
+- ✅ Check prerequisites (Node.js, npm, FFmpeg)
+- ✅ Install backend dependencies
+- ✅ Install frontend dependencies
+- ✅ Create .env configuration file
+- ✅ Prompt for API keys
+- ✅ Create helper scripts (start-all.sh, start-backend.sh, start-frontend.sh)
+- ✅ Optionally start the application
+
+**Option 2: Manual Installation**
+
 Clone the repository:
 
 ```bash
-https://github.com/ChetanXpro/short-video-automation.git
+git clone https://github.com/ChetanXpro/short-video-automation.git
 cd short-video-automation
 ```
 
@@ -50,6 +73,14 @@ Install dependencies:
 
 ```bash
 npm install
+```
+
+Install frontend dependencies:
+
+```bash
+cd web-ui
+npm install
+cd ..
 ```
 
 ### Configuration

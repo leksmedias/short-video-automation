@@ -3,6 +3,11 @@
 Automate the creation of short videos with text-to-speech, audio merging, image overlay, and background audio.
 - It takes average 40 second to create a 35 second short video.
 
+> **⚠️ IMPORTANT:** To get the latest features (Inworld TTS, Groq integration, video-audio sync fix, and installation script), clone the `claude/sync-video-audio-subtitles-WhpZY` branch:
+> ```bash
+> git clone -b claude/sync-video-audio-subtitles-WhpZY https://github.com/leksmedias/short-video-automation.git
+> ```
+
 
 # Example videos
 Here are some example videos created using Short Video Automation:
@@ -42,8 +47,8 @@ Short Video Automation is a tool that simplifies the process of creating short v
 **Option 1: One-Click Installation (Recommended)**
 
 ```bash
-# Clone the repository
-git clone https://github.com/leksmedias/short-video-automation.git
+# Clone the repository (use the feature branch with latest updates)
+git clone -b claude/sync-video-audio-subtitles-WhpZY https://github.com/leksmedias/short-video-automation.git
 cd short-video-automation
 
 # Run the installation script
@@ -65,7 +70,7 @@ The script will automatically:
 Clone the repository:
 
 ```bash
-git clone https://github.com/leksmedias/short-video-automation.git
+git clone -b claude/sync-video-audio-subtitles-WhpZY https://github.com/leksmedias/short-video-automation.git
 cd short-video-automation
 ```
 
